@@ -1,0 +1,14 @@
+## git ignore node js project
+node_modules/
+npm-debug.log
+.DS_Store
+.idea/
+.vscode/
+.env
+dist/
+coverage/
+*.log
+*.log.*
+*.log-*
+*.log/*
+*.log-*/

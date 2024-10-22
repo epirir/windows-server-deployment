@@ -1,0 +1,19 @@
+{
+  "name": "windows-server-deployment",
+  "version": "1.0.0",
+  "description": "Basic project to demonstrate CI/CD with GitHub Actions and Jest",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "author": "Edwin Pirir",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "@babel/preset-env": "^7.15.0",
+    "babel-jest": "^29.0.0"
+  },
+  "dependencies": {}
+}
