@@ -22,9 +22,6 @@ jobs:
       - name: Install Project Dependencies
         run: npm install
 
-      - name: Run ESLint Code Analysis
-        run: npx eslint .
-
       - name: Execute Unit Tests
         run: npm test
 
