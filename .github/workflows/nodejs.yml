@@ -31,7 +31,11 @@ jobs:
 
       - name: Install WinSCP using Chocolatey
         run: choco install winscp -y
-
+      
+      - name: Test Server Connectivity
+        run: |
+          Test-Connection -ComputerName "${{ secrets.WINDOWS_SERVER_IP }}" -Count 2
+      
       - name: Transfer files to Windows Server using WinSCP
         run: |
           # Define the WinSCP script to upload files
