@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     env:
-      TEST_SERVER: ${{ secrets.TEST_SERVER }}
+      TEST_SERVER: ${{ secrets.WINDOWS_SERVER_IP }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
