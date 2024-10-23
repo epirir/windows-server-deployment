@@ -31,7 +31,8 @@ jobs:
           option confirm off
           open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ secrets.WINDOWS_SERVER_IP }}
           put -r ./* /C:/Aplications/
-          exit'@
+          exit
+          '@
 
           # Save the script to a temporary file
           $scriptPath = "$env:USERPROFILE\winscp-script.txt"
