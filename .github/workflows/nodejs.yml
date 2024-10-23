@@ -40,16 +40,7 @@ jobs:
       
       - name: Test Server Connectivity
         run: |
-          try {
-            $response = Invoke-WebRequest -Uri "http://$env:TEST_SERVER" -UseBasicParsing
-            if ($response.StatusCode -eq 200) {
-              Write-Host "Connection to $env:TEST_SERVER successful"
-            } else {
-              Write-Host "Connection to $env:TEST_SERVER failed with status code $($response.StatusCode)"
-            }
-          } catch {
-            Write-Host "Connection to $env:TEST_SERVER failed: $_"
-          }
+          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
       - name: Transfer files to Windows Server using WinSCP
         run: |
