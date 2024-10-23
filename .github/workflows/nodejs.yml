@@ -34,10 +34,10 @@ jobs:
       - name: Install WinSCP using Chocolatey
         run: choco install winscp -y
       
-      - name: Test Server Connectivity.
+      - name: Test Server Connectivity
         run: |
-          Write-Host "The TEST_SERVER value is: $TEST_SERVER"  # Print the value
-          Test-Connection -ComputerName "$TEST_SERVER" -Count 2
+          Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
+          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
       - name: Transfer files to Windows Server using WinSCP
         run: |
@@ -56,7 +56,3 @@ jobs:
 
           # Execute WinSCP with the script
           & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
-
-      - name: Restart IIS on the remote server
-        run: |
-          Invoke-WebRequest -Uri "http://${{ secrets.WINDOWS_SERVER_IP }}/api/restart" -UseBasicParsing
