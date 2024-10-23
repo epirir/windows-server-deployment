@@ -36,7 +36,7 @@ jobs:
       
       - name: Verify Server Connectivity
         run: |
-          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
+          # Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
       - name: Transfer Files to Windows Server using WinSCP
         run: |
