@@ -32,7 +32,7 @@ jobs:
       - name: Install WinSCP using Chocolatey
         run: choco install winscp -y
       
-      - name: Test Server Connectivity
+      - name: Test Server Connectivity.
         run: |
           Test-Connection -ComputerName "${{ secrets.WINDOWS_SERVER_IP }}" -Count 2
       
