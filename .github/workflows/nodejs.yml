@@ -23,6 +23,11 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Install WinSCP
+        run: |
+          Invoke-WebRequest -Uri "https://winscp.net/download/WinSCP-5.17.10-Setup.exe" -OutFile "$env:USERPROFILE\WinSCP-Setup.exe"
+          Start-Process -FilePath "$env:USERPROFILE\WinSCP-Setup.exe" -ArgumentList "/S" -Wait
+
       - name: Transfer files to Windows Server using WinSCP
         run: |
           # Define the WinSCP script to upload files
