@@ -11,55 +11,54 @@ jobs:
     env:
       TEST_SERVER: ${{ secrets.WINDOWS_SERVER_IP }}
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Set Up Node.js Environment
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
-      - name: Install dependencies
+      - name: Install Project Dependencies
         run: npm install
 
-      - name: Run tests
+      - name: Run ESLint Code Analysis
+        run: npx eslint .
+
+      - name: Execute Unit Tests
         run: npm test
 
-      - name: Install Chocolatey
+      - name: Install Chocolatey Package Manager
         run: |
           Set-ExecutionPolicy Bypass -Scope Process -Force; 
           [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
           iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-      - name: Install WinSCP using Chocolatey
+      - name: Install WinSCP via Chocolatey
         run: choco install winscp -y
       
-      # - name: Print TEST_SERVER value
-      #   run: |
-      #     Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
+      - name: Verify Server Connectivity
+        run: |
+          # Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
-      # - name: Test Server Connectivity
-      #   run: |
-      #     Test-Connection -ComputerName 34.55.203.242 -Count 2
-      
-      # - name: Transfer files to Windows Server using WinSCP
-      #   run: |
-      #     # Define the WinSCP script to upload files
-      #     $script = @'
-      #     option batch abort
-      #     option confirm off
-      #     open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@34.55.203.242
-      #     put -r ./* /C:/Aplications/
-      #     exit
-      #     '@
+      - name: Transfer Files to Windows Server using WinSCP
+        run: |
+          # # Define the WinSCP script to upload files
+          # $script = @'
+          # option batch abort
+          # option confirm off
+          # open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ secrets.WINDOWS_SERVER_IP }}
+          # put -r ./* /C:/Aplications/
+          # exit
+          # '@
 
-      #     # Save the script to a temporary file
-      #     $scriptPath = "$env:USERPROFILE\winscp-script.txt"
-      #     $script | Set-Content -Path $scriptPath
+          # # Save the script to a temporary file
+          # $scriptPath = "$env:USERPROFILE\winscp-script.txt"
+          # $script | Set-Content -Path $scriptPath
 
-      #     # Execute WinSCP with the script
-      #     & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
+          # # Execute WinSCP with the script
+          # & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
 
-      # - name: Restart IIS on the remote server
-      #   run: |
-      #     Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
+      - name: Restart IIS on Remote Server
+        run: |
+          # Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
