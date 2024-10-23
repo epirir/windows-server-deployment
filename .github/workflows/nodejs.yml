@@ -34,32 +34,32 @@ jobs:
       - name: Install WinSCP using Chocolatey
         run: choco install winscp -y
       
-      - name: Print TEST_SERVER value
-        run: |
-          Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
+      # - name: Print TEST_SERVER value
+      #   run: |
+      #     Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
       
-      - name: Test Server Connectivity
-        run: |
-          Test-Connection -ComputerName 34.55.203.242 -Count 2
+      # - name: Test Server Connectivity
+      #   run: |
+      #     Test-Connection -ComputerName 34.55.203.242 -Count 2
       
-      - name: Transfer files to Windows Server using WinSCP
-        run: |
-          # Define the WinSCP script to upload files
-          $script = @'
-          option batch abort
-          option confirm off
-          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@34.55.203.242
-          put -r ./* /C:/Aplications/
-          exit
-          '@
+      # - name: Transfer files to Windows Server using WinSCP
+      #   run: |
+      #     # Define the WinSCP script to upload files
+      #     $script = @'
+      #     option batch abort
+      #     option confirm off
+      #     open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@34.55.203.242
+      #     put -r ./* /C:/Aplications/
+      #     exit
+      #     '@
 
-          # Save the script to a temporary file
-          $scriptPath = "$env:USERPROFILE\winscp-script.txt"
-          $script | Set-Content -Path $scriptPath
+      #     # Save the script to a temporary file
+      #     $scriptPath = "$env:USERPROFILE\winscp-script.txt"
+      #     $script | Set-Content -Path $scriptPath
 
-          # Execute WinSCP with the script
-          & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
+      #     # Execute WinSCP with the script
+      #     & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
 
-      - name: Restart IIS on the remote server
-        run: |
-          Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
+      # - name: Restart IIS on the remote server
+      #   run: |
+      #     Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
