@@ -25,13 +25,13 @@ jobs:
 
       - name: Transfer files to Windows Server using WinSCP
         run: |
-          # Set the WinSCP script to upload files
-          $script = @"
+          # Define the WinSCP script to upload files
+          $script = @'
           option batch abort
           option confirm off
           open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ secrets.WINDOWS_SERVER_IP }}
           put -r ./* /C:/Aplications/
-          exit"@
+          exit'@
 
           # Save the script to a temporary file
           $scriptPath = "$env:USERPROFILE\winscp-script.txt"
