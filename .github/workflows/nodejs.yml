@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: windows-latest
+    env:
+      TEST_SERVER: ${{ secrets.WINDOWS_SERVER_IP }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -34,7 +36,8 @@ jobs:
       
       - name: Test Server Connectivity.
         run: |
-          Test-Connection -ComputerName "${{ secrets.WINDOWS_SERVER_IP }}" -Count 2
+          Write-Host "The TEST_SERVER value is: $TEST_SERVER"  # Print the value
+          Test-Connection -ComputerName "$TEST_SERVER" -Count 2
       
       - name: Transfer files to Windows Server using WinSCP
         run: |
