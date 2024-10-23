@@ -39,8 +39,11 @@ jobs:
           Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
       
       - name: Test Server Connectivity
+        env:
+          TEST_SERVER: ${{ vars.TEST_SERVER }}
         run: |
-          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
+            Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
+            Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
       - name: Transfer files to Windows Server using WinSCP
         run: |
@@ -48,7 +51,7 @@ jobs:
           $script = @'
           option batch abort
           option confirm off
-          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ secrets.WINDOWS_SERVER_IP }}
+          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ vars.TEST_SERVER }}
           put -r ./* /C:/Aplications/
           exit
           '@
