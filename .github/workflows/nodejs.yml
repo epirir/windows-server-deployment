@@ -11,9 +11,6 @@ jobs:
     env:
       TEST_SERVER: ${{ vars.TEST_SERVER }}
     steps:
-      - name: Test
-        run: echo ${{ vars.GITHUB_SHA_SHORT }}
-
       - name: Checkout code
         uses: actions/checkout@v2
 
