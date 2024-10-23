@@ -39,11 +39,11 @@ jobs:
       
       - name: Print TEST_SERVER value
         run: |
-          Write-Host "The TEST_SERVER value is: $env:TEST_SERVER"  # Print the value
+          Write-Host "The TEST_SERVER value is: 34.55.203.242"  # Print the value
       
       - name: Test Server Connectivity
         run: |
-          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
+          Test-Connection -ComputerName 34.55.203.242 -Count 2
       
       - name: Transfer files to Windows Server using WinSCP
         run: |
@@ -51,7 +51,7 @@ jobs:
           $script = @'
           option batch abort
           option confirm off
-          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ vars.TEST_SERVER }}
+          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@34.55.203.242
           put -r ./* /C:/Aplications/
           exit
           '@
@@ -65,4 +65,4 @@ jobs:
 
       - name: Restart IIS on the remote server
         run: |
-          Invoke-WebRequest -Uri "http://${{ vars.TEST_SERVER }}/api/restart" -UseBasicParsing
+          Invoke-WebRequest -Uri "http://34.55.203.242/api/restart" -UseBasicParsing
