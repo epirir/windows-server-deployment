@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline with Security Scans
 
 on:
   push:
@@ -27,16 +27,16 @@ jobs:
 
       - name: Install Chocolatey Package Manager
         run: |
-          # Set-ExecutionPolicy Bypass -Scope Process -Force; 
-          # [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
-          # iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          Set-ExecutionPolicy Bypass -Scope Process -Force; 
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
       - name: Install WinSCP via Chocolatey
         run: choco install winscp -y
       
       - name: Verify Server Connectivity
         run: |
-          # Test-Connection -ComputerName $env:TEST_SERVER -Count 2
+          Test-Connection -ComputerName $env:TEST_SERVER -Count 2
       
       - name: Transfer Files to Windows Server using WinSCP
         run: |
@@ -58,4 +58,51 @@ jobs:
 
       - name: Restart IIS on Remote Server
         run: |
-          # Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
+          Invoke-WebRequest -Uri "http://$env:TEST_SERVER/api/restart" -UseBasicParsing
+
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
+
+      - name: Run Trivy to Check for Vulnerabilities
+        run: trivy fs .
