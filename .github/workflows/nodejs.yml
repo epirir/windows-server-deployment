@@ -23,10 +23,14 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Install WinSCP
+      - name: Install Chocolatey
         run: |
-          Invoke-WebRequest -Uri "https://winscp.net/download/WinSCP-5.17.10-Setup.exe" -OutFile "$env:USERPROFILE\WinSCP-Setup.exe"
-          Start-Process -FilePath "$env:USERPROFILE\WinSCP-Setup.exe" -ArgumentList "/S" -Wait
+          Set-ExecutionPolicy Bypass -Scope Process -Force; 
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+      - name: Install WinSCP using Chocolatey
+        run: choco install winscp -y
 
       - name: Transfer files to Windows Server using WinSCP
         run: |
