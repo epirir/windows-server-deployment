@@ -23,16 +23,23 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Deploy to Windows Server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.WINDOWS_SERVER_IP }}
-          username: ${{ secrets.WINDOWS_SERVER_USER }}
-          password: ${{ secrets.WINDOWS_SERVER_PASSWORD }}
-          port: 22
-          source: "./*"
-          target: "C:/Aplications/"
+      - name: Transfer files to Windows Server using WinSCP
+        run: |
+          # Set the WinSCP script to upload files
+          $script = @"
+          option batch abort
+          option confirm off
+          open sftp://${{ secrets.WINDOWS_SERVER_USER }}:${{ secrets.WINDOWS_SERVER_PASSWORD }}@${{ secrets.WINDOWS_SERVER_IP }}
+          put -r ./* /C:/Aplications/
+          exit"@
 
-      # - name: Restart IIS
-      #   run: |
-      #     Invoke-WebRequest -Uri "http://localhost:5000/api/restart" -UseBasicParsing
+          # Save the script to a temporary file
+          $scriptPath = "$env:USERPROFILE\winscp-script.txt"
+          $script | Set-Content -Path $scriptPath
+
+          # Execute WinSCP with the script
+          & "C:\Program Files (x86)\WinSCP\WinSCP.com" /script=$scriptPath
+
+      - name: Restart IIS on the remote server
+        run: |
+          Invoke-WebRequest -Uri "http://${{ secrets.WINDOWS_SERVER_IP }}/api/restart" -UseBasicParsing
